@@ -1,0 +1,209 @@
+.todo-list-container {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.search-input,
+.new-todo-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+}
+
+.add-todo-section {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.new-todo-input {
+  flex: 1;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  height: 36px;  /* Explicit height for input */
+}
+
+.action-button {
+  padding: 0 16px;  /* Remove vertical padding */
+  height: 36px;     /* Match input height */
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  line-height: 36px; /* Center text vertically */
+}
+
+.add-button {
+  background-color: #61dafb;
+  color: white;
+}
+
+.search-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.action-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.action-button:active {
+  transform: translateY(0);
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+}
+
+.todo-item {
+  position: relative;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 12px;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: 32px;
+  display: flex;
+  align-items: flex-start;  /* Allow content to stay in place during expansion */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.todo-item.expanded {
+  height: 100px;
+  padding-bottom: 50px;  /* Space for action buttons */
+}
+
+.todo-content {
+  display: flex;
+  align-items: center;
+  background: white;
+  width: 100%;
+  height: 24px;
+  margin-top: 4px;  /* Center content vertically within 32px container */
+}
+
+.expanded-actions {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.edit-button, .delete-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.edit-button {
+  background-color: #61dafb;
+  color: white;
+}
+
+.delete-button {
+  background-color: #ff4444;
+  color: white;
+}
+
+.todo-text {
+  flex-grow: 1;
+  text-align: left;
+  margin-left: 10px;
+  transition: color 0.3s ease;
+  line-height: 24px; /* Match checkbox height */
+}
+
+.todo-checkbox {
+  flex-shrink: 0;
+  position: relative;
+  width: 24px;  /* Larger checkbox */
+  height: 24px; /* Larger checkbox */
+  -webkit-appearance: none;
+  appearance: none;
+  border: 2px solid #61dafb;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  background-color: white; /* Ensure background is visible in Chrome */
+  box-sizing: border-box; /* Consistent box model across browsers */
+}
+
+.todo-checkbox:checked {
+  animation: jiggle 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  background-color: white; /* Maintain background when checked */
+}
+
+@keyframes jiggle {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-5deg) translateX(-2px); }
+  50% { transform: rotate(5deg) translateX(2px); }
+  75% { transform: rotate(-3deg) translateX(-1px); }
+  100% { transform: rotate(0deg) scale(1.1); }
+}
+
+.todo-checkbox:checked::before {
+  content: "✓";
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  color: #ff69b4;
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.3s ease-in-out 0.2s;
+  line-height: 1; /* Ensure consistent checkmark positioning */
+}
+
+.todo-text.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.todo-input-edit {
+  flex-grow: 1;
+  padding: 4px;
+  margin-right: 10px;
+}
+
+.todo-item:hover .actions,
+.todo-item:active .actions {
+  right: -20px;
+}
+
+.todo-item.swiped .actions {
+  right: 0;
+}
+
+.todo-content.swiped {
+  transform: translateX(-160px);
+} 
