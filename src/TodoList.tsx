@@ -169,6 +169,7 @@ const TodoList: React.FC = () => {
           </li>
         ))}
       </ul>
+      <div className="watermark">made by @rexbruhh</div>
     </div>
   );
 };
