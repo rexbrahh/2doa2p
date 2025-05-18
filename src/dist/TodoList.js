@@ -22,8 +22,11 @@ var react_1 = require("react");
 require("./TodoList.css"); // import CSS for TodoList styling
 var TodoList = function () {
     var _a = react_1.useState([
-        { id: 1, text: 'Buy milk', completed: false, isEditing: false, isExpanded: false },
-        { id: 2, text: 'Call mom', completed: false, isEditing: false, isExpanded: false },
+        { id: 1, text: 'buy zyns', completed: false, isEditing: false, isExpanded: false },
+        { id: 2, text: 'call gf', completed: false, isEditing: false, isExpanded: false },
+        { id: 3, text: 'hit the gym', completed: false, isEditing: false, isExpanded: false },
+        { id: 4, text: 'check jira tickets', completed: false, isEditing: false, isExpanded: false },
+        { id: 5, text: 'fix bugs', completed: false, isEditing: false, isExpanded: false },
     ]), todos = _a[0], setTodos = _a[1];
     // Combine searchTerm and newTodoText into one state
     var _b = react_1.useState(''), inputText = _b[0], setInputText = _b[1];

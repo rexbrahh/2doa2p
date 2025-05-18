@@ -11,8 +11,11 @@ interface Todo {
 
 const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([
-    { id: 1, text: 'Buy milk', completed: false, isEditing: false, isExpanded: false },
-    { id: 2, text: 'Call mom', completed: false, isEditing: false, isExpanded: false },
+    { id: 1, text: 'buy zyns', completed: false, isEditing: false, isExpanded: false },
+    { id: 2, text: 'call gf', completed: false, isEditing: false, isExpanded: false },
+    { id: 3, text: 'hit the gym', completed: false, isEditing: false, isExpanded: false },
+    { id: 4, text: 'check jira tickets', completed: false, isEditing: false, isExpanded: false },
+    { id: 5, text: 'fix bugs', completed: false, isEditing: false, isExpanded: false },
   ]);
   
   // Combine searchTerm and newTodoText into one state
