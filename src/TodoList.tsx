@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
+import React, { useState } from 'react';
 import './TodoList.css'; // import CSS for TodoList styling
 
 interface Todo {
@@ -9,7 +9,7 @@ interface Todo {
   isExpanded: boolean;
 }
 
-const TodoList: React.FC = () => {
+const TodoList: React.FunctionComponent = () => {
   const [todos, setTodos] = useState<Todo[]>([
     { id: 1, text: 'buy zyns', completed: false, isEditing: false, isExpanded: false },
     { id: 2, text: 'call gf', completed: false, isEditing: false, isExpanded: false },
@@ -54,7 +54,7 @@ const TodoList: React.FC = () => {
   };
 
   // Handle input change
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
   };
 
@@ -81,7 +81,7 @@ const TodoList: React.FC = () => {
   };
 
   // Handle enter key
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       addTodo();
     }
@@ -169,7 +169,7 @@ const TodoList: React.FC = () => {
           </li>
         ))}
       </ul>
-      <div className="watermark">made by @rexbruhh</div>
+      <div className="watermark">made by @rexbrahh</div>
     </div>
   );
 };
