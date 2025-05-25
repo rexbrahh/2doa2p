@@ -170,6 +170,7 @@ const TodoList: React.FunctionComponent = () => {
         ))}
       </ul>
       <div className="watermark">made by @rexbrahh</div>
+      <div className="hint-text">double click on a task for a suprise</div>
     </div>
   );
 };

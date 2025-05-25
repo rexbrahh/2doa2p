@@ -215,4 +215,13 @@
   font-size: 0.75em;
   color: #aaa;
   z-index: 1000; /* Ensure it's on top of other elements */
+}
+
+.hint-text {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  font-size: 0.75em;
+  color: #aaa;
+  z-index: 1000; /* Ensure it's on top of other elements */
 } 
