@@ -1,60 +1,148 @@
 .todo-list-container {
-  max-width: 500px;
-  margin: 20px auto;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  /* max-width: 500px; */ /* REMOVED to allow full width */
+  /* margin: 20px auto; */ /* REMOVED to allow full width and remove centering */
+  padding: 20px; /* Keep padding for content spacing */
+  box-sizing: border-box;
+  height: 100%; /* Ensure it can scroll if content overflows */
+  display: flex;
+  flex-direction: column;
+  /* border: 1px solid #444; */ /* REMOVED for seamless panel */
+  border-radius: 0; /* REMOVED border-radius as there's no border */
+  background-color: #1e1e1e; /* Match main content background */
+  color: #e0e0e0; /* Default light text for empty states etc. */
+}
+
+.todo-list-header {
+  margin-bottom: 20px;
+}
+
+.todo-list-header h1 {
+  font-size: 2em; /* Larger heading */
+  color: #e0e0e0; /* Light color for dark theme */
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.folder-title-icon {
+  margin-right: 10px;
+  width: 28px; /* Size for the icon in the title */
+  height: 28px;
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+  color: #e0e0e0; /* Icon color to match title text */
+  flex-shrink: 0;
+  vertical-align: middle; /* Better alignment with text */
+}
+
+/* Targets the SVG rendered by FolderIconRenderer inside .folder-title-icon */
+.folder-title-icon .folder-icon-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Styles for the placeholder in empty folder view */
+.empty-folder-placeholder .placeholder-icon {
+  width: 4em; /* Container size for the large placeholder icon */
+  height: 4em;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+  color: #888; /* Muted color for the placeholder icon */
+}
+
+/* Targets the SVG rendered by FolderIconRenderer inside .placeholder-icon */
+.empty-folder-placeholder .placeholder-icon .folder-icon-svg {
+  width: 70%; /* SVG takes up a good portion of its container */
+  height: 70%;
 }
 
 .search-input,
 .new-todo-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  flex-grow: 1; /* Allow input to take available space */
+  width: auto; /* Override width: 100% if flex-grow is used effectively */
+  padding: 10px 12px; 
+  margin-bottom: 0; /* Remove margin if .add-todo-section handles spacing */
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 12px;
+  border: none; 
+  border-radius: 8px; 
+  background-color: transparent; /* Default transparent background */
+  color: #e0e0e0;
+  font-size: 1em; 
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
+}
+
+.new-todo-input::placeholder {
+  color: #888;
+}
+
+.search-input::placeholder { /* Assuming search-input is similar */
+  color: #888;
+}
+
+.new-todo-input:hover,
+.search-input:hover { 
+  background-color: #2a2a2a; /* Highlight color on hover */
+  box-shadow: 0 0 5px rgba(85, 85, 85, 0.3); 
+}
+
+.new-todo-input:focus,
+.search-input:focus { 
+  outline: none; 
+  background-color: #2a2a2a; /* Keep highlighted on focus */
+  box-shadow: 0 0 0 2px #555; /* Focus ring */
 }
 
 .add-todo-section {
-  display: flex;
-  gap: 8px;
   margin-bottom: 20px;
+  padding-left: 20px; 
+  padding-right: 20px; 
+  box-sizing: border-box; 
+  display: flex; 
+  align-items: center;
+  /* This container itself won't have the changing background, the input inside will */
 }
 
-.new-todo-input {
-  flex: 1;
-  padding: 8px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  height: 36px;  /* Explicit height for input */
+.search-icon {
+  color: #888; 
+  margin-right: 8px; 
+  width: 24px;       /* Match checkbox height for better vertical alignment */
+  height: 24px;      /* Match checkbox height */
+  flex-shrink: 0;    
+  display: inline-flex; /* To use align-items and justify-content */
+  align-items: center;    /* Vertically center the SVG content */
+  justify-content: center;/* Horizontally center the SVG content (if SVG itself has padding) */
 }
 
 .action-button {
-  padding: 0 16px;  /* Remove vertical padding */
-  height: 36px;     /* Match input height */
-  border: none;
+  padding: 0 16px;
+  height: 36px;
+  border: 2px solid #2c3e50; /* Less saturated navy blue border */
   border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s ease;
-  line-height: 36px; /* Center text vertically */
+  line-height: 36px;
+  background-color: #f5f5f0;
+  color: #2c3e50;
 }
 
 .add-button {
-  background-color: #61dafb;
-  color: white;
+  background-color: #f5f5f0;
+  color: #2c3e50;
 }
 
 .search-button {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #f5f5f0;
+  color: #2c3e50;
 }
 
 .action-button:hover {
-  opacity: 0.9;
+  background-color: #2c3e50;
+  color: white;
   transform: translateY(-1px);
 }
 
@@ -70,32 +158,38 @@
 .todo-item {
   position: relative;
   margin-bottom: 10px;
-  background: white;
+  /* background: white; */ /* REMOVED white background */
+  background: transparent; /* Make default background same as panel */
   border-radius: 12px;
   padding: 12px 20px;
   transition: all 0.3s ease;
   cursor: pointer;
-  height: 32px;
+  min-height: 32px; /* Use min-height for initial state */
+  height: auto; /* Allow height to be determined by content initially */
   display: flex;
-  align-items: flex-start;  /* Allow content to stay in place during expansion */
+  align-items: flex-start;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
 }
 
-.todo-item.expanded {
+.todo-item:hover,
+.todo-item.expanded { /* .expanded class might be used for programmatic expansion if needed */
+  background-color: #2a2a2a; /* Slightly lighter dark for highlight */
   height: 100px;
-  padding-bottom: 50px;  /* Space for action buttons */
+  padding-bottom: 50px;
 }
 
 .todo-content {
   display: flex;
   align-items: center;
-  background: white;
+  /* background: white; */ /* REMOVED white background */
+  background: transparent; /* Ensure it inherits from .todo-item */
   width: 100%;
-  height: 24px;
-  margin-top: 4px;  /* Center content vertically within 32px container */
+  /* height: 24px; */ /* Let content determine height or use min-height if needed */
+  min-height: 24px;
+  margin-top: 4px; /* This can be adjusted if spacing looks off */
 }
 
 .expanded-actions {
@@ -105,31 +199,48 @@
   display: flex;
   gap: 8px;
   opacity: 0;
-  animation: fadeIn 0.3s ease forwards;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.todo-item:hover .expanded-actions,
+.todo-item.expanded .expanded-actions {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .edit-button, .delete-button {
   padding: 8px 16px;
-  border: none;
   border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+  background-color: #f5f5f0;
+  pointer-events: auto;
 }
 
 .edit-button {
-  background-color: #61dafb;
-  color: white;
+  border: 2px solid #2c3e50;
+  color: #2c3e50;
 }
 
 .delete-button {
-  background-color: #ff4444;
+  border: 2px solid #c0392b; /* Less saturated red */
+  color: #c0392b;
+}
+
+.edit-button:hover {
+  background-color: #2c3e50;
   color: white;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+  color: white;
+}
+
+.edit-button:active, .delete-button:active {
+  transform: translateY(0);
 }
 
 .todo-text {
@@ -137,30 +248,98 @@
   text-align: left;
   margin-left: 10px;
   transition: color 0.3s ease;
-  line-height: 24px; /* Match checkbox height */
+  line-height: 24px;
+  outline: none;
+  cursor: text;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.todo-text.editing {
+  cursor: text;
+}
+
+.todo-text:not(.editing) {
+  cursor: default;
+}
+
+.todo-text:focus {
+  cursor: text;
+}
+
+.todo-text.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.checkbox-container {
+  position: relative; /* For positioning the input and checkmark */
+  display: inline-flex; /* Align items nicely */
+  align-items: center;
+  cursor: pointer; /* Make the whole label clickable */
 }
 
 .todo-checkbox {
-  flex-shrink: 0;
-  position: relative;
-  width: 24px;  /* Larger checkbox */
-  height: 24px; /* Larger checkbox */
-  -webkit-appearance: none;
-  appearance: none;
-  border: 2px solid #61dafb;
-  border-radius: 50%;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  outline: none;
-  cursor: pointer;
-  background-color: white; /* Ensure background is visible in Chrome */
-  box-sizing: border-box; /* Consistent box model across browsers */
+  /* Visually hide the native checkbox but keep it accessible */
+  -webkit-appearance: none !important;
+  appearance: none !important;        
+  opacity: 0 !important;
+  position: absolute !important;
+  width: 1px !important; 
+  height: 1px !important; 
+  margin: -1px !important; 
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  border: 0 !important;
+  cursor: pointer !important; /* Still good to have, though it's hidden */
 }
 
-.todo-checkbox:checked {
-  animation: jiggle 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-  background-color: white; /* Maintain background when checked */
+.checkmark {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-color: transparent; /* Explicitly transparent */
+  border: 2px solid #666; /* Muted gray border */
+  border-radius: 50%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.1s ease-out; /* Added transform transition */
+  position: relative; /* For the ::before pseudo-element */
 }
+
+/* Style .checkmark based on .todo-checkbox:hover */
+.todo-checkbox:hover + .checkmark {
+  border-color: #888; /* Slightly lighter border on hover for affordance - can keep this */
+  /* animation: subtle-wiggle 0.3s ease-in-out; */ /* REMOVED subtle wiggle on direct hover */
+}
+
+/* Style .checkmark based on .todo-checkbox:checked */
+.todo-checkbox:checked + .checkmark {
+  background-color: transparent; /* Keep transparent */
+  border-color: #89cff0; /* Soft blue border when checked */
+  animation: jiggle 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.todo-checkbox:checked + .checkmark::before {
+  content: "✓";
+  position: absolute;
+  left: 50%;
+  top: 45%; 
+  transform: translate(-50%, -50%);
+  color: #89cff0; 
+  font-weight: bold;
+  font-size: 16px; 
+  line-height: 1;
+}
+
+/* REMOVE the keyframes definition if no longer used elsewhere */
+/* 
+@keyframes subtle-wiggle {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-1px) rotate(-2deg); }
+  75% { transform: translateX(1px) rotate(2deg); }
+}
+*/
 
 @keyframes jiggle {
   0% { transform: rotate(0deg) scale(1); }
@@ -168,25 +347,6 @@
   50% { transform: rotate(5deg) translateX(2px); }
   75% { transform: rotate(-3deg) translateX(-1px); }
   100% { transform: rotate(0deg) scale(1.1); }
-}
-
-.todo-checkbox:checked::before {
-  content: "✓";
-  position: absolute;
-  left: 50%;
-  top: 45%;
-  transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  color: #ff69b4;
-  font-weight: bold;
-  font-size: 16px;
-  transition: color 0.3s ease-in-out 0.2s;
-  line-height: 1; /* Ensure consistent checkmark positioning */
-}
-
-.todo-text.completed {
-  text-decoration: line-through;
-  color: #999;
 }
 
 .todo-input-edit {
@@ -224,4 +384,149 @@
   font-size: 0.75em;
   color: #aaa;
   z-index: 1000; /* Ensure it's on top of other elements */
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 1.1em;
+}
+
+.error {
+  text-align: center;
+  padding: 20px;
+  color: #ff4444;
+  font-size: 1.1em;
+  background-color: #ffeeee;
+  border-radius: 8px;
+  margin: 10px;
+}
+
+.tag-section {
+  position: absolute;
+  bottom: 10px;
+  left: 54px; /* Adjusted: 20px (item padding) + 24px (checkbox) + 10px (text margin) */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.todo-item:hover .tag-section {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e8e8e3;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #2c3e50;
+}
+
+.remove-tag {
+  background: none;
+  border: none;
+  color: #666;
+  margin-left: 4px;
+  padding: 0 4px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.remove-tag:hover {
+  color: #c0392b;
+}
+
+.tag-input {
+  width: 120px; /* Can be adjusted if needed */
+  padding: 4px 8px;
+  border: 1px solid #555; /* Kept for consistency with its original darker theme style */
+  border-radius: 8px;
+  font-size: 12px;
+  outline: none; /* Remove default focus outline first */
+  background-color: #333; 
+  color: #e0e0e0; 
+  transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out; /* Added border-color to transition */
+}
+
+.tag-input::placeholder {
+  color: #888;
+}
+
+.tag-input:focus {
+  border-color: #555; /* Ensure border color doesn't change unexpectedly if it was different */
+  box-shadow: 0 0 0 2px #555; /* Brighter grey shadow 'border' on focus */
+}
+
+.new-task-entry-section {
+  display: flex;
+  align-items: center;
+  padding: 8px 0px; /* Add some padding around the new task input area */
+  margin-bottom: 15px;
+  background-color: #2a2a2a; /* Slightly different background to stand out */
+  border-radius: 8px;
+}
+
+.new-task-entry-input {
+  flex-grow: 1;
+  padding: 10px 12px;
+  border: none;
+  background-color: transparent; /* Transparent to use section background */
+  color: #e0e0e0;
+  font-size: 1em;
+  outline: none;
+  border-radius: 8px 0 0 8px; /* Round left corners */
+}
+
+.new-task-confirm-button,
+.new-task-cancel-button {
+  background-color: transparent;
+  border: none;
+  color: #ccc;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease-in-out;
+}
+
+.new-task-confirm-button svg,
+.new-task-cancel-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.new-task-confirm-button:hover {
+  color: #4CAF50; /* Green for confirm */
+}
+
+.new-task-cancel-button:hover {
+  color: #f44336; /* Red for cancel */
+}
+
+/* Remove styles for the old add-todo-section if they still exist */
+/* .add-todo-section { display: none; } */
+/* .new-todo-input { display: none; } */
+/* .search-icon { display: none; } */
+
+/* Adjust margin for todo-list if new task entry is visible */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  /* marginTop is now handled by inline style in TodoList.tsx based on isAddingTask */
 } 

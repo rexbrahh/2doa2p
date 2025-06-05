@@ -1,6 +1,76 @@
 .App {
-  text-align: center;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Prevent scrolling at the App level */
+  background-color: #282c34; /* Matching a dark theme base */
 }
+
+.resizer {
+  width: 5px; /* Width of the draggable area */
+  cursor: col-resize;
+  background-color: #444; /* Initial color of the resizer */
+  /* background-image: linear-gradient(to right, #555, #333, #555); */ /* Subtle gradient for depth */
+  transition: background-color 0.2s ease-out;
+  z-index: 10; /* Ensure it's above sidebar/content if they have backgrounds */
+  flex-shrink: 0; /* Prevent resizer from shrinking */
+  /* To make it feel like it covers the border, 
+     we can position it slightly or use box-shadow on hover */
+}
+
+.resizer:hover,
+.App.resizing .resizer {
+  background-color: #666; /* Brighter grey for resizer highlight */
+  /* box-shadow: 0 0 5px #007bff; */ /* Optional glow effect */
+}
+
+.main-content {
+  flex-grow: 1; /* Allow main content to take up remaining space */
+  /* background-color: #f4f4f4; */ /* Lighter background for content, or keep dark */
+  background-color: #1e1e1e; /* Darker content background, similar to Things */
+  padding: 0; /* Remove padding if TodoList container handles it */
+  overflow-y: auto; /* Allow scrolling within the main content area */
+  height: 100vh; /* Ensure it takes full height */
+  /* min-width: 0; */ /* Helps flexbox correctly shrink content if it's too wide, usually good practice */
+  /* width is now set by inline style in App.tsx */
+}
+
+/* Placeholder for when no folder is selected or folder is empty */
+.no-folder-selected,
+.empty-folder-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #888; /* Muted text color */
+  font-size: 1.5em;
+}
+
+.empty-folder-placeholder .placeholder-icon {
+  font-size: 4em;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.app-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: #1c1c1c;
+    color: #ff6b6b;
+    font-size: 1.2em;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Keep other existing .App styles if they don't conflict */
+/* For example, text-align: center might not be desired for the whole App container anymore */
+/* .App { */
+/*   text-align: center; */ /* Consider removing or scoping this if it was global */
+/* } */
 
 .App-logo {
   height: 40vmin;
@@ -35,4 +105,38 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.fab-add-task {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #007bff; /* Primary action color - can be themed */
+  color: white;
+  border: none;
+  border-radius: 50%; 
+  width: 56px;  
+  height: 56px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2), 0 0 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.15s ease-in-out;
+  z-index: 1050; /* Ensure it's above other content */
+}
+
+.fab-add-task:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+  transform: scale(1.05);
+}
+
+.fab-add-task:active {
+  background-color: #004085;
+  transform: scale(0.98);
+}
+
+.fab-add-task svg { /* Style for the Heroicon PlusIcon */
+  width: 28px;
+  height: 28px;
 }

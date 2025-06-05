@@ -1,0 +1,259 @@
+.sidebar {
+  /* width: 240px; */ /* REMOVED - Width is now dynamic via inline style from App.tsx */
+  height: 100vh;
+  background-color: #333; /* Dark background */
+  color: #ccc; /* Light text color */
+  display: flex;
+  flex-direction: column;
+  padding-top: 0; /* Remove top padding if search bar is first element */
+  box-sizing: border-box;
+  flex-shrink: 0; /* Prevent sidebar from shrinking beyond its set width */
+  overflow-x: hidden; /* Prevent horizontal scrollbar if content is wider than width prop */
+}
+
+.sidebar-nav {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-top: 8px; /* INCREASED to accommodate upward magnetic movement + shadow */
+  padding-bottom: 3px; /* Keep bottom padding for last item's shadow */
+  padding-left: 3px;  /* ADDED horizontal padding for shadow */
+  padding-right: 3px; /* ADDED horizontal padding for shadow */
+  box-sizing: border-box; /* Ensure padding is included in the element's total width/height */
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;  /* REMOVE horizontal margin, buttons will handle all indent */
+}
+
+.sidebar-nav li {
+  position: relative; /* For positioning the actions panel absolutely if needed, or for button's overflow */
+}
+
+.sidebar-nav li button {
+  background: transparent; /* Default transparent background */
+  border: none;
+  color: #ccc;
+  padding: 0; /* REMOVE padding from button, will be on inner content div */
+  width: 100%; 
+  text-align: left;
+  cursor: pointer;
+  font-size: 1em; /* Standardized font size, was 14px */
+  display: block; /* Changed from flex, it will be a container */
+  white-space: nowrap; 
+  border-radius: 8px; /* Rounded corners */
+  transition: background-color 0.2s ease-in-out, 
+              box-shadow 0.2s ease-in-out, 
+              color 0.2s ease-in-out, 
+              transform 0.1s ease-out; /* Added transform for magnetic effect */
+  margin-bottom: 4px; /* Space between buttons */
+  box-sizing: border-box; /* Ensure padding and border are included in width/height */
+  position: relative; /* For stacking context and overflow */
+  overflow: hidden;   /* Crucial: Hides the action panel initially */
+}
+
+.folder-item-content {
+  display: flex;
+  align-items: center;
+  padding: 10px 10px 10px 20px; 
+  gap: 10px;
+  background-color: #333; /* Default opaque background to hide actions */
+  width: 100%; 
+  box-sizing: border-box; 
+  transition: transform 0.2s ease-out, background-color 0.2s ease-out; 
+  position: relative; 
+  z-index: 1; 
+}
+
+/* When the PARENT button is hovered or active, its background changes. */
+/* The content div itself can remain with its default background or also change. */
+/* For simplicity, let content div be generally opaque. */
+
+.sidebar-nav li button:hover .folder-item-content,
+.sidebar-nav li.active .folder-item-content {
+  background-color: #2a2a2a; /* Match button's hover/active background */
+}
+
+/* The button provides the main hover/active feedback and rounded corners */
+.sidebar-nav li button:hover {
+  background-color: #2a2a2a; 
+  color: #fff; 
+}
+
+.sidebar-nav li.active button {
+  background-color: #2a2a2a; 
+  color: #fff; 
+  font-weight: bold;
+  box-shadow: 0 0 0 2px #555; 
+}
+
+.folder-name {
+  flex-grow: 1; /* Allow name to take available space */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2; /* Adjust line-height for better vertical centering perception */
+  /* margin-left: 8px; /* Gap handles spacing if icon exists */
+}
+
+.folder-icon {
+  display: flex; 
+  align-items: center; /* Ensure icon itself is centered if it has intrinsic padding */
+  justify-content: center;
+  width: 20px; /* Icon size, matches search icon */
+  height: 20px; 
+  flex-shrink: 0; 
+  /* The color of the SVG stroke will be inherited from the button's text color (color: #ccc; or color: #fff; on hover/active) */
+}
+
+.folder-icon-svg {
+  width: 100%; 
+  height: 100%; 
+}
+
+.folder-count {
+  margin-left: auto;
+  font-size: 0.9em;
+  color: #888;
+}
+
+.sidebar-separator {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 10px 0;
+}
+
+.sidebar-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #444;
+}
+
+.new-list-button {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 0;
+  width: 100%;
+  text-align: left;
+}
+
+.new-list-button:hover {
+  color: #fff;
+}
+
+.sidebar-error {
+  padding: 20px;
+  color: #ff6b6b;
+  text-align: center;
+}
+
+.folder-title-icon {
+  margin-right: 10px;
+  width: 28px; /* Or 1em, or 1.2em - adjust to match h1 font size context */
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle; /* Important for aligning the span with text */
+  color: #e0e0e0; /* Or inherit */
+  flex-shrink: 0;
+}
+
+.folder-title-icon .folder-icon-svg { /* Class applied by FolderIconRenderer */
+  width: 100%;
+  height: 100%;
+}
+
+.empty-folder-placeholder .placeholder-icon {
+  width: 4em; /* Make the container large */
+  height: 4em;
+  margin-bottom: 20px;
+  opacity: 0.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #888; /* Color for the placeholder icon's stroke */
+}
+
+.empty-folder-placeholder .placeholder-icon .folder-icon-svg {
+  width: 70%; /* SVG takes up most, but not all, of its container */
+  height: 70%;
+}
+
+.sidebar-search-section {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px; /* Content (icon) starts 20px from left */
+  margin-bottom: 15px; 
+  background-color: #333; 
+}
+
+.sidebar-search-icon {
+  color: #888; 
+  width: 20px; 
+  height: 20px;      
+  margin-right: 10px; /* Space between icon and input field */
+  flex-shrink: 0;    
+}
+
+.sidebar-search-input {
+  flex-grow: 1;
+  padding: 8px 10px; 
+  border: none; 
+  border-radius: 6px; 
+  background-color: #222; 
+  color: #e0e0e0;
+  font-size: 1em; /* Standardized font size, was 0.9em */ 
+  outline: none;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.sidebar-search-input::placeholder {
+  color: #777;
+}
+
+.sidebar-search-input:focus {
+  background-color: #111;
+  box-shadow: 0 0 0 2px #555; 
+}
+
+.folder-actions-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 75px; /* Match DELETE_BUTTON_WIDTH from JS for consistency */
+  height: 100%;
+  display: flex; /* Use flex to center the button inside */
+  align-items: center;
+  justify-content: center; /* Center the button horizontally */
+  background-color: transparent; 
+  z-index: 0; 
+}
+
+.folder-delete-button {
+  background: transparent;
+  border: none;
+  color: #c0392b; 
+  /* Remove fixed padding, let the panel center it. Or use minimal padding for click area. */
+  padding: 10px; /* Sufficient clickable area around the icon */
+  /* height: 100%; */ /* No longer needed if panel centers it */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+  border-radius: 6px; /* Optional: give the button itself some subtle shape */
+}
+
+.folder-delete-button:hover {
+  color: #e74c3c; 
+  background-color: rgba(255,255,255,0.05); /* Subtle hover for the button area */
+}
+
+.folder-delete-button svg {
+  width: 22px; /* Slightly larger trash icon */
+  height: 22px;
+} 
