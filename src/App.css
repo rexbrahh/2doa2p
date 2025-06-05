@@ -7,11 +7,10 @@
 }
 
 .resizer {
-  width: 5px; /* Width of the draggable area */
+  width: 2px; /* Very thin by default */
   cursor: col-resize;
-  background-color: #444; /* Initial color of the resizer */
-  /* background-image: linear-gradient(to right, #555, #333, #555); */ /* Subtle gradient for depth */
-  transition: background-color 0.2s ease-out;
+  background-color: transparent; /* Transparent by default */
+  transition: background-color 0.2s ease-out, width 0.2s ease-out; /* Added width transition */
   z-index: 10; /* Ensure it's above sidebar/content if they have backgrounds */
   flex-shrink: 0; /* Prevent resizer from shrinking */
   /* To make it feel like it covers the border, 
@@ -20,7 +19,8 @@
 
 .resizer:hover,
 .App.resizing .resizer {
-  background-color: #666; /* Brighter grey for resizer highlight */
+  background-color: #555; /* Subtle highlight on hover/drag */
+  width: 5px; /* Expand width on hover/drag for better grabbability */
   /* box-shadow: 0 0 5px #007bff; */ /* Optional glow effect */
 }
 
@@ -107,36 +107,160 @@
   }
 }
 
-.fab-add-task {
+.fab-menu-container {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background-color: #007bff; /* Primary action color - can be themed */
-  color: white;
-  border: none;
+  bottom: 30px; 
+  right: 30px;  
+  z-index: 1040; 
+  width: 56px; 
+  height: 56px;
   border-radius: 50%; 
-  width: 56px;  
-  height: 56px; 
+  background-color: transparent; /* CONTAINER IS ALWAYS TRANSPARENT */
+  box-shadow: none; /* CONTAINER HAS NO SHADOW */
+  cursor: pointer; 
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-top-left-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-bottom-right-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden; /* Clip action items when closed */
+  /* Magnetic transform is applied here by JS */
+}
+
+.fab-menu-container.fab-menu-open {
+  width: 220px;  
+  height: 220px; 
+  /* background-color: transparent; */ /* Already transparent */
+  border-top-left-radius: 220px;  
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 28px; 
+  /* box-shadow: none; */ /* Already none */
+  overflow: visible; /* Allow action items to be fully visible */
+}
+
+/* The VISIBLE FAB disc (Plus/X icon holder) */
+.fab-toggle-icon {
+  position: absolute; 
+  bottom: 0; 
+  right: 0;
+  width: 56px; 
+  height: 56px;
+  border-radius: 50%;
+  background-color: #007bff; 
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2), 0 0 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; 
+  z-index: 1042; /* Base z-index */
+  pointer-events: auto; /* Ensure it can be clicked */
+  cursor: pointer; /* Show pointer cursor as it's the main button */
+}
+
+/* Hover effect for the visible FAB is when container (clickable area) is hovered AND menu is closed */
+.fab-menu-container:not(.fab-menu-open):hover .fab-toggle-icon {
+  background-color: #0056b3; 
+}
+
+/* When menu is open, visible FAB (now showing X) gets a different style */
+.fab-menu-container.fab-menu-open .fab-toggle-icon {
+  /* When menu is open, ensure it's still definitively on top */
+  z-index: 1042; /* Re-affirm or increase if necessary, but should be fine */
+  background-color: #0056b3; /* Darker blue for the "X" state */
+}
+
+/* Wrapper for each action item - this gets positioned in the arc */
+.fab-action-item-wrapper {
+  position: absolute;
+  /* Initial position of the wrapper: centered on where the FAB center would be if container was 56x56 */
+  /* (Container width 56 - Item width 48)/2 = 4px from edges */
+  bottom: 4px; 
+  right: 4px;  
+  width: 48px; 
+  height: 48px;
+  opacity: 0;
+  transform: scale(0.5);
+  transform-origin: center center; 
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.20s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 1041; /* Above main container (1040), below toggle icon (1042) */
+}
+
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper {
+  opacity: 1;
+  pointer-events: auto;
+  /* The transform to scale(1) and translate to arc position is on specific classes below */
+}
+
+/* Staggered animation delays for WRAPPERS appearing */
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-quick-find   { transition-delay: 0.05s; }
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-add-folder     { transition-delay: 0.1s; }
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-add-tasks-actual { transition-delay: 0.15s; }
+
+/* Arc positions for WRAPPERS */
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-add-tasks-actual { 
+  transform: translateY(-100px) scale(1);
+}
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-add-folder {     
+  transform: translateX(-70.71px) translateY(-70.71px) scale(1);
+}
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-quick-find {   
+  transform: translateX(-100px) scale(1);
+}
+
+/* The actual button (child of wrapper) */
+.fab-action-item { 
+  background-color: #007bff; 
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px !important;  /* FORCE explicit size */
+  height: 48px !important; /* FORCE explicit size */
+  padding: 0 !important; /* Ensure no padding */
+  box-sizing: border-box !important; /* Ensure correct box model */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.15s ease-in-out;
-  z-index: 1050; /* Ensure it's above other content */
+  transform: translate(0,0); 
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-out; 
 }
 
-.fab-add-task:hover {
-  background-color: #0056b3; /* Darker shade on hover */
-  transform: scale(1.05);
+.fab-action-item:hover { 
+  background-color: #0056b3; 
+}
+.fab-action-item svg {
+    width: 22px !important; /* Ensure SVG size is also constrained */
+    height: 22px !important;
 }
 
-.fab-add-task:active {
-  background-color: #004085;
-  transform: scale(0.98);
+/* Styles for the Mobile Placeholder Page */
+.mobile-placeholder-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  background-color: #282c34; /* Match app dark theme */
+  color: #e0e0e0;
 }
 
-.fab-add-task svg { /* Style for the Heroicon PlusIcon */
-  width: 28px;
-  height: 28px;
+.mobile-placeholder-container h2 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  color: #61dafb; /* React blue for a bit of color */
+}
+
+.mobile-placeholder-container p {
+  font-size: 1.1em;
+  line-height: 1.6;
+  max-width: 500px;
+  margin-bottom: 15px;
 }

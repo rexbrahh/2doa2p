@@ -3,7 +3,9 @@ import './TodoList.css'; // import CSS for TodoList styling
 import { Todo } from './types/todo.ts';
 import { Folder } from './types/folder'; // Import Folder type
 import { FolderIconRenderer } from './Sidebar.tsx'; // Corrected import
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid'; // For new task input buttons
+import { CheckIcon, XMarkIcon, BookmarkIcon } from '@heroicons/react/24/solid'; // For new task input buttons and BookmarkIcon
+import { todoStorage } from './services/todoStorage.ts';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'; // For search input
 
 interface TodoListProps {
   selectedFolder: Folder; // Receive the full selected folder object
@@ -14,11 +16,6 @@ interface TodoListProps {
   onConfirmAddTask: (taskText: string) => void; // Callback to add the task
   onCancelAddTask: () => void;  // Callback to cancel adding
 }
-
-// REMOVED Unused constants for the old input field's magnetic effect
-// const INPUT_PROXIMITY_RADIUS = 75; 
-// const INPUT_MAX_OFFSET = 10; 
-// const INPUT_PULL_FACTOR = 0.12; 
 
 // Constants for the checkbox magnetic effect (ensure these are also removed if that feature is not active)
 // const CHECKBOX_PROXIMITY_RADIUS = 50; 
@@ -47,6 +44,9 @@ const TodoList: React.FC<TodoListProps> = ({
   const [newTodoText, setNewTodoText] = useState(''); // Local state for the new task input
   const newTaskInputRef = useRef<HTMLInputElement>(null); // Ref for the new task input
 
+  const [expandedTagInputTodoId, setExpandedTagInputTodoId] = useState<number | null>(null);
+  const tagInputRef = useRef<HTMLInputElement>(null); // Ref for the actual tag input field
+
   // Focus the new task input when isAddingTask becomes true
   useEffect(() => {
     if (isAddingTask && newTaskInputRef.current) {
@@ -54,6 +54,13 @@ const TodoList: React.FC<TodoListProps> = ({
       setNewTodoText(''); // Clear any previous text
     }
   }, [isAddingTask]);
+
+  // Effect to focus tag input when it expands
+  useEffect(() => {
+    if (expandedTagInputTodoId !== null && tagInputRef.current) {
+      tagInputRef.current.focus();
+    }
+  }, [expandedTagInputTodoId]);
 
   const handleCheckboxContainerMouseEnter = useCallback((todoId: number) => {
     if (focusedId === todoId) {
@@ -119,36 +126,23 @@ const TodoList: React.FC<TodoListProps> = ({
     }
   };
 
-  const addTag = (todoId: number, tag: string) => {
-    const trimmedTag = tag.trim();
-    if (trimmedTag === '') return;
-
-    setTodos(prev =>
-      prev.map(todo => {
-        if (todo.id === todoId) {
-          if (todo.tags.includes(trimmedTag)) return todo;
-          return { ...todo, tags: [...todo.tags, trimmedTag] };
-        }
-        return todo;
-      })
-    );
+  const handleAddTagAndClose = (todoId: number) => {
+    const trimmedTag = tagInput.trim();
+    if (trimmedTag !== '') {
+      setTodos(prevTodos => prevTodos.map(t => (t.id === todoId && !t.tags.includes(trimmedTag)) ? {...t, tags: [...t.tags, trimmedTag]} : t));
+    }
     setTagInput('');
+    setExpandedTagInputTodoId(null);
   };
 
-  const removeTag = (todoId: number, tagToRemove: string) => {
-    setTodos(prev =>
-      prev.map(todo =>
-        todo.id === todoId
-          ? { ...todo, tags: todo.tags.filter(tag => tag !== tagToRemove) }
-          : todo
-      )
-    );
-  };
-
-  const handleTagKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, todoId: number) => {
-    if (e.key === 'Enter' || e.key === ',') {
+  const handleTagInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, todoId: number) => {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      addTag(todoId, tagInput);
+      handleAddTagAndClose(todoId);
+    }
+    if (e.key === 'Escape') {
+      setExpandedTagInputTodoId(null);
+      setTagInput('');
     }
   };
 
@@ -171,6 +165,16 @@ const TodoList: React.FC<TodoListProps> = ({
     if (e.key === 'Escape') {
       handleNewTaskCancel();
     }
+  };
+
+  const removeTag = (todoId: number, tagToRemove: string) => {
+    setTodos(prev =>
+      prev.map(todo =>
+        todo.id === todoId
+          ? { ...todo, tags: todo.tags.filter(tag => tag !== tagToRemove) }
+          : todo
+      )
+    );
   };
 
   return (
@@ -270,14 +274,32 @@ const TodoList: React.FC<TodoListProps> = ({
                 </div>
               </div>
               <div className="tag-section">
-                <input
-                  type="text"
-                  defaultValue={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyPress={(e) => handleTagKeyPress(e, todo.id)}
-                  placeholder="Add tag..."
-                  className="tag-input"
-                />
+                {expandedTagInputTodoId === todo.id ? (
+                  <div className="tag-input-expanded-wrapper">
+                    <input
+                      ref={tagInputRef}
+                      type="text"
+                      value={tagInput} // Controlled input
+                      onChange={(e) => setTagInput(e.target.value)}
+                      onKeyDown={(e) => handleTagInputKeyPress(e, todo.id)}
+                      placeholder="Add tag..."
+                      className="tag-input expanded"
+                    />
+                    <button onClick={() => handleAddTagAndClose(todo.id)} className="tag-input-action-button confirm-tag-button"><CheckIcon /></button>
+                    <button onClick={() => { setExpandedTagInputTodoId(null); setTagInput(''); }} className="tag-input-action-button cancel-tag-button"><XMarkIcon /></button>
+                  </div>
+                ) : (
+                  <button 
+                    className="tag-input-icon-button"
+                    onClick={() => {
+                        setExpandedTagInputTodoId(todo.id);
+                        setTagInput(''); // Clear previous tag input text
+                    }}
+                    aria-label="Add tag"
+                  >
+                    <BookmarkIcon />
+                  </button>
+                )}
                 <div className="tags-container">
                   {todo.tags.map(tag => (
                     <span key={tag} className="tag">

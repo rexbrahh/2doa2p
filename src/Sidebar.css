@@ -42,15 +42,15 @@
   font-size: 1em; /* Standardized font size, was 14px */
   display: block; /* Changed from flex, it will be a container */
   white-space: nowrap; 
-  border-radius: 8px; /* Rounded corners */
+  border-radius: 8px; /* This is the main border-radius for the item */
   transition: background-color 0.2s ease-in-out, 
               box-shadow 0.2s ease-in-out, 
               color 0.2s ease-in-out, 
               transform 0.1s ease-out; /* Added transform for magnetic effect */
   margin-bottom: 4px; /* Space between buttons */
   box-sizing: border-box; /* Ensure padding and border are included in width/height */
-  position: relative; /* For stacking context and overflow */
-  overflow: hidden;   /* Crucial: Hides the action panel initially */
+  position: relative;
+  overflow: hidden;   /* Crucial for clipping children */
 }
 
 .folder-item-content {
@@ -58,7 +58,7 @@
   align-items: center;
   padding: 10px 10px 10px 20px; 
   gap: 10px;
-  background-color: #333; /* Default opaque background to hide actions */
+  background-color: #333; /* Default opaque background */
   width: 100%; 
   box-sizing: border-box; 
   transition: transform 0.2s ease-out, background-color 0.2s ease-out; 
@@ -72,7 +72,7 @@
 
 .sidebar-nav li button:hover .folder-item-content,
 .sidebar-nav li.active .folder-item-content {
-  background-color: #2a2a2a; /* Match button's hover/active background */
+  background-color: #2a2a2a; /* Matches button active/hover state */
 }
 
 /* The button provides the main hover/active feedback and rounded corners */
@@ -82,10 +82,10 @@
 }
 
 .sidebar-nav li.active button {
-  background-color: #2a2a2a; 
+  background-color: #2a2a2a; /* This is mostly for the area under folder-item-content if it were transparent */
   color: #fff; 
   font-weight: bold;
-  box-shadow: 0 0 0 2px #555; 
+  box-shadow: 0 0 0 2px #555; /* The "border" for active state */
 }
 
 .folder-name {
@@ -186,7 +186,7 @@
 .sidebar-search-section {
   display: flex;
   align-items: center;
-  padding: 15px 20px; /* Content (icon) starts 20px from left */
+  padding: 5px 20px; /* REDUCED vertical padding to make overall height closer to folder items */
   margin-bottom: 15px; 
   background-color: #333; 
 }
@@ -195,20 +195,27 @@
   color: #888; 
   width: 20px; 
   height: 20px;      
-  margin-right: 10px; /* Space between icon and input field */
-  flex-shrink: 0;    
+  margin-right: 10px; 
+  flex-shrink: 0;
+  position: relative; /* Allow for fine-tuning */
+  top: 1px;           /* Nudge down slightly */
 }
 
 .sidebar-search-input {
   flex-grow: 1;
+  width: auto; /* Can be removed if min-width:0 and flex-grow handle it well */
+  min-width: 0; /* Allow input to shrink below its content size if needed */
   padding: 8px 10px; 
   border: none; 
   border-radius: 6px; 
   background-color: #222; 
   color: #e0e0e0;
-  font-size: 1em; /* Standardized font size, was 0.9em */ 
+  font-size: 1em;  
+  line-height: 1.2; 
   outline: none;
-  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, 
+              box-shadow 0.2s ease-in-out, 
+              transform 0.1s ease-out; 
 }
 
 .sidebar-search-input::placeholder {
@@ -224,36 +231,41 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 75px; /* Match DELETE_BUTTON_WIDTH from JS for consistency */
+  width: 75px; 
   height: 100%;
-  display: flex; /* Use flex to center the button inside */
+  display: flex; 
   align-items: center;
-  justify-content: center; /* Center the button horizontally */
-  background-color: transparent; 
+  justify-content: center; 
+  background-color: #333; /* Match sidebar background */
   z-index: 0; 
+  border-top-right-radius: 7px; /* Slightly less than parent to avoid peeking */
+  border-bottom-right-radius: 7px; /* Slightly less than parent */
+  border-left: 1px solid #4a4a4a; /* Distinct separating line */
+  box-sizing: border-box; /* Include border in width */
 }
 
 .folder-delete-button {
   background: transparent;
   border: none;
   color: #c0392b; 
-  /* Remove fixed padding, let the panel center it. Or use minimal padding for click area. */
-  padding: 10px; /* Sufficient clickable area around the icon */
-  /* height: 100%; */ /* No longer needed if panel centers it */
-  display: flex;
+  padding: 0; 
+  width: 40px;  
+  height: 40px; 
+  display: inline-flex; 
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: color 0.2s ease-in-out;
-  border-radius: 6px; /* Optional: give the button itself some subtle shape */
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  border-radius: 50%; 
 }
 
 .folder-delete-button:hover {
   color: #e74c3c; 
-  background-color: rgba(255,255,255,0.05); /* Subtle hover for the button area */
+  background-color: rgba(255, 255, 255, 0.08); 
 }
 
 .folder-delete-button svg {
-  width: 22px; /* Slightly larger trash icon */
-  height: 22px;
+  width: 20px; /* Adjusted back from 22px as per last image */
+  height: 20px;
+  stroke: currentColor; 
 } 

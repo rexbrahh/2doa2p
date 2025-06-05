@@ -26,18 +26,18 @@
 
 .folder-title-icon {
   margin-right: 10px;
-  width: 28px; /* Size for the icon in the title */
-  height: 28px;
-  display: inline-flex; 
+  width: 24px; /* Or desired size for title icon, e.g., 0.9em of h1 font-size. Let's use 24px */
+  height: 24px; /* Match width */
+  display: inline-flex; /* To help with alignment and sizing of SVG child */
   align-items: center;
   justify-content: center;
-  color: #e0e0e0; /* Icon color to match title text */
-  flex-shrink: 0;
-  vertical-align: middle; /* Better alignment with text */
+  vertical-align: middle; /* Helps align the span container with the text in the h1 */
 }
 
-/* Targets the SVG rendered by FolderIconRenderer inside .folder-title-icon */
-.folder-title-icon .folder-icon-svg {
+/* Ensure the SVG inside fills the .folder-title-icon span */
+/* This rule might already exist in Sidebar.css or be general enough if .folder-icon-svg is styled globally */
+/* If not, add or ensure it exists: */
+.folder-title-icon .folder-icon-svg { /* Targeting the class applied by FolderIconRenderer */
   width: 100%;
   height: 100%;
 }
@@ -404,15 +404,21 @@
 }
 
 .tag-section {
-  position: absolute;
-  bottom: 10px;
-  left: 54px; /* Adjusted: 20px (item padding) + 24px (checkbox) + 10px (text margin) */
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
+  display: flex; /* Keep flex for alignment of its direct children if needed */
+  align-items: center; /* Vertically align items if section has height */
+  /* gap: 8px; */ /* May not be needed if only one element (icon or input wrapper) is primary */
+  opacity: 0; 
+  transition: opacity 0.2s ease, transform 0.2s ease; /* Add transform for potential future use */
+  pointer-events: none; 
+  /* width: 100%; */ /* REMOVE: No longer needs full width */
+  width: auto; /* Take up content width */
+  /* padding-left: 54px; */ /* REMOVE: No longer aligned to text start */
+  box-sizing: border-box;
+  position: absolute; 
+  bottom: 10px; /* Keep bottom position */
+  /* left: 0; */    /* REMOVE: No longer aligned to left */
+  right: 10px;   /* ADD: Position to the right */
+  justify-content: flex-end; /* Align content (icon/input) to the right if section is wider */
 }
 
 .todo-item:hover .tag-section {
@@ -420,7 +426,98 @@
   pointer-events: auto;
 }
 
-.tags-container {
+.tag-input-icon-button {
+  background: transparent;
+  border: none;
+  color: #888;
+  padding: 4px;
+  cursor: pointer;
+  display: inline-flex; /* Changed to inline-flex */
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease-in-out;
+}
+
+.tag-input-icon-button:hover {
+  color: #ccc;
+}
+
+.tag-input-icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tag-input-expanded-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #3a3a3c; /* Slightly different dark, or same as other inputs #333 */
+  border-radius: 8px;
+  /* overflow: hidden; */ /* If buttons are part of the radius */
+  /* Max width for the expanded input area */
+  max-width: 200px; 
+  transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.tag-input.expanded {
+  flex-grow: 1;
+  padding: 6px 10px; /* Adjusted padding */
+  border: none;
+  background-color: transparent; /* Uses wrapper's background */
+  color: #e0e0e0;
+  font-size: 13px; /* Slightly larger for readability */
+  outline: none;
+  /* border-radius: 8px 0 0 8px; */ /* Only if buttons are visually distinct and appended */
+  border-radius: 8px; /* Full radius if buttons are inside or styled to blend */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.tag-input.expanded::placeholder {
+  color: #888;
+}
+
+.tag-input.expanded:focus {
+  box-shadow: 0 0 0 2px #555; /* Consistent focus ring */
+}
+
+.tag-input-action-button {
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.tag-input-action-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tag-input-action-button.confirm-tag-button {
+  color: #4CAF50; /* Green */
+}
+.tag-input-action-button.confirm-tag-button:hover {
+  color: #66bb6a; /* Lighter Green */
+}
+
+.tag-input-action-button.cancel-tag-button {
+  color: #aaa; /* Muted grey */
+}
+.tag-input-action-button.cancel-tag-button:hover {
+  color: #f44336; /* Red */
+}
+
+/* Original .tag-input style (if it still exists and is not the .expanded one) might need removal or renaming */
+/* For example, if there was a .tag-input { width: 120px; ... } ensure it doesn't conflict */
+.tag-input {
+    /* This might be the old one - if .tag-input.expanded is used, this might be redundant or for a different context */
+    /* For now, let's assume it's mostly superseded by .tag-input.expanded */
+    /* width: 120px; ... old styles ... */
+}
+
+.tags-container { /* Ensure this is still styled correctly */
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -449,27 +546,6 @@
 
 .remove-tag:hover {
   color: #c0392b;
-}
-
-.tag-input {
-  width: 120px; /* Can be adjusted if needed */
-  padding: 4px 8px;
-  border: 1px solid #555; /* Kept for consistency with its original darker theme style */
-  border-radius: 8px;
-  font-size: 12px;
-  outline: none; /* Remove default focus outline first */
-  background-color: #333; 
-  color: #e0e0e0; 
-  transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out; /* Added border-color to transition */
-}
-
-.tag-input::placeholder {
-  color: #888;
-}
-
-.tag-input:focus {
-  border-color: #555; /* Ensure border color doesn't change unexpectedly if it was different */
-  box-shadow: 0 0 0 2px #555; /* Brighter grey shadow 'border' on focus */
 }
 
 .new-task-entry-section {
@@ -529,4 +605,77 @@
   list-style: none;
   padding: 0;
   /* marginTop is now handled by inline style in TodoList.tsx based on isAddingTask */
+}
+
+.fab-toggle-icon {
+  position: absolute; 
+  bottom: 0; 
+  right: 0;
+  width: 56px; 
+  height: 56px;
+  border-radius: 50%;
+  background-color: #007bff; /* Default FAB blue */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2), 0 0 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out; 
+  z-index: 1042; /* Explicitly higher */
+  pointer-events: auto; 
+  cursor: pointer; 
+}
+
+.fab-menu-container.fab-menu-open .fab-toggle-icon {
+  background-color: #0056b3; /* Darker blue for the "X" state */
+  z-index: 1042; /* Re-affirm */
+}
+
+.fab-action-item-wrapper {
+  position: absolute; 
+  bottom: 4px; 
+  right: 4px;  
+  opacity: 0; /* << THIS WOULD MAKE THE BUTTON ITSELF INVISIBLE */
+  transform: scale(0.5) translate(0,0); /* << THIS WOULD SHRINK/REPOSITION IT WITHIN THE WRAPPER */
+  z-index: 1041; 
+  /* ... */
+}
+
+/* The actual button (child of wrapper) */
+.fab-action-item { 
+  background-color: #007bff; 
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px; 
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transform: translate(0,0); 
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-out; 
+  padding: 0; /* Ensure no padding */
+  box-sizing: border-box; /* Explicitly set */
+} 
+
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-add-tasks-actual { 
+  transform: translateY(-100px) scale(1);
+}
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-add-folder {     
+  transform: translateX(-70.71px) translateY(-70.71px) scale(1);
+}
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper.fab-quick-find {   
+  transform: translateX(-100px) scale(1), !important;
+} 
+
+.fab-menu-container.fab-menu-open .fab-action-item-wrapper {
+  opacity: 1;
+  pointer-events: auto;
+} 
+
+.fab-menu-container {
+  position: fixed; /* ... other styles ... */
+  /* NO display:flex here */
 } 
